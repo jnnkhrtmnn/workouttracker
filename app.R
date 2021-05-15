@@ -92,12 +92,11 @@ ui <- navbarPage("Workout tracker", inverse = TRUE, collapsible = FALSE, positio
                            plotOutput("rplot", height = 450
                            )
                   ),
-                  #tabPanel("Volume",
-                  #         tags$h3("Volume over time"),
-                  #         verbatimTextOutput("table_state")
-                           #plotOutput("wplot", height = 450
-                           #)
-                  #),
+                  tabPanel("Sets",
+                           tags$h3("Sets over time"),
+                           plotOutput("splot", height = 450
+                           )
+                  ),
                   tabPanel("Raw data",
                                     tags$h3("Raw data"),
                            reactableOutput("raw_dat")
@@ -123,13 +122,18 @@ ui <- navbarPage("Workout tracker", inverse = TRUE, collapsible = FALSE, positio
 # Define server logic required to draw a histogram ----
 server <- function(input, output, session) {
   
-  #df = load_df()
   inserted <- c()
   
-  plot_dat = group_by(df, exercise, date) %>% summarize(weight = mean(weight), reps=mean(reps), sets=mean(sets))
+  up_dat <- function(){
+    
+    df <<- load_df()
+    plot_dat <<- group_by(df, exercise, date) %>% summarize(weight = mean(weight), reps=mean(reps), sets=mean(sets))
   
-  exercises = c(plot_dat %>% count(exercise) %>% arrange(desc(n)) %>% select(exercise))[[1]]
+    exercises <<- c(plot_dat %>% count(exercise) %>% arrange(desc(n)) %>% select(exercise))[[1]]
+    
+  }
   
+  up_dat()
   
   #updateSelectizeInput(session, NULL, choices = c("",sort(unique(df$exercise))), server = TRUE)
   counter = 0
@@ -191,8 +195,8 @@ server <- function(input, output, session) {
           'sets' = s
         )
       }
-      df = load_df()
-      df = add_workout_to_df(list_in=list_in, df=df)
+      df <<- load_df()
+      df <<- add_workout_to_df(list_in=list_in, df=df)
       save_df(df)
       for (i in (1:length(inserted))){
         removeUI(
@@ -208,7 +212,7 @@ server <- function(input, output, session) {
         save_bw_df(bw_data)
       }
       
-      
+      #up_dat()
       showNotification('Added workout to dataframe!', type="message",duration=2)
     }
   })
@@ -283,6 +287,14 @@ server <- function(input, output, session) {
       )
   })
   
+  output$splot <- renderPlot({
+    ggplot(sub_plot_dat(), aes(date,sets)) + geom_point(aes(col=exercise), size=4) + geom_line(aes(col=exercise)) + 
+      labs(y="Sets", x="Date", fill="Exercise")+ theme(
+        legend.title = element_text(size = 24),
+        legend.text = element_text(size = 20)
+      )
+  })
+  
   
 }
 
@@ -291,7 +303,6 @@ shinyApp(ui, server)
 
 
 
-# Calc volume, use BW for pull ups, chin_ups
 # histograms of rep ranges
 # hover over for plots
 # LR for weight / reps progress 
