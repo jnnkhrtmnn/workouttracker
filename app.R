@@ -98,6 +98,7 @@ ui <- navbarPage("Workout tracker", inverse = TRUE, collapsible = FALSE, positio
                            )
                   ),
                   tabPanel("Raw data",
+                           #verbatimTextOutput("table_state"),
                                     tags$h3("Raw data"),
                            reactableOutput("raw_dat")
                   )
@@ -141,7 +142,7 @@ server <- function(input, output, session) {
     
     # id as separate reactive counter, then set plus 1 for input$add_row
     # sothat one row is always shown
-    counter = counter + 1
+    counter <<- counter + 1
     id = paste0('to_',counter)
     
     insertUI(
@@ -164,16 +165,16 @@ server <- function(input, output, session) {
         ),
         id=id)
     )
-    inserted <<- c(id, inserted)
+    inserted <<- c(inserted,id)
   })
   
   observeEvent(input$remove_row, {
     removeUI(
       ## pass in appropriate div id
-      selector = paste0('#', inserted[-length(inserted)])
+      selector = paste0('#', inserted[length(inserted)])
     )
     inserted <<- inserted[-length(inserted)]
-    counter = max(0,counter - 1)
+    counter <<- max(0,counter - 1)
   })
   
   observeEvent(input$submit,{
@@ -229,7 +230,7 @@ server <- function(input, output, session) {
               #resizeable=TRUE,
               selection="multiple",
               onClick="select",
-              defaultSelected = c(1:5), #match(c("bench_press", "squat", "press", "deadlift", "power_clean"),exercises),#,
+              defaultSelected = c(1:min(5,length(exercises))),
               defaultSortOrder = "asc",
               bordered=TRUE
     )
@@ -259,8 +260,8 @@ server <- function(input, output, session) {
   })
   
   output$table_state <- renderPrint({
-    #a <- req(input$rep_slider[1])
-    print({d_range()})
+    a <- reactiveValuesToList(input)
+    print({a})
   })
 
   
@@ -306,7 +307,6 @@ shinyApp(ui, server)
 # histograms of rep ranges
 # hover over for plots
 # LR for weight / reps progress 
-
 
 
 
