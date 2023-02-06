@@ -7,16 +7,14 @@ library(shinythemes)
 library(ggplot2)
 library(plotly)
 
-setwd("C:/Users/janni/Desktop/gym")
 
-source("mod/utils_new.R")
+source("mod/utils.R")
 
 
 df = load_df()
 
 ui <- navbarPage("Workout tracker", inverse = TRUE, collapsible = FALSE, position = "static-top",
                  theme = shinytheme("yeti"), 
-                 #tags$head(tags$link(rel="shortcut icon", href="C:/Users/janni/Desktop/gym/weightlifting_icon-icons.com_67203.ico")),
                  tabPanel('record workouts and analyse progress'),
   tags$head(
     tags$style(

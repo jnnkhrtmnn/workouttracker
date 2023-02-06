@@ -2,7 +2,6 @@
 
 library(tidyverse)
 
-
 add_workout_to_df <- function(df, list_in){
     
   df_w = tibble(date=c(),exercise=c(), weight=c(), set=c(), reps=c())
@@ -28,7 +27,7 @@ add_workout_to_df <- function(df, list_in){
 
 
 save_df <- function(df){
-  save_path = "C:/Users/janni/Desktop/gym/data"
+  save_path = "./data"
   file_name ="app_data.csv"
   write.csv(df, paste(save_path, file_name,sep="/"), row.names=FALSE)
   return('Added workout to dataframe!')
@@ -36,21 +35,21 @@ save_df <- function(df){
 
 
 load_df <- function(){
-  load_path = "C:/Users/janni/Desktop/gym/data"
+  load_path = "./data"
   file_name ="app_data.csv"
   df = read_csv(paste(load_path, file_name, sep="/"))
   return(df)
 }
 
 load_bw_data <- function(){
-  load_path = "C:/Users/janni/Desktop/gym/data"
+  load_path = "./data"
   file_name ="bw_data.csv"
   df = read_csv(paste(load_path, file_name, sep="/"))
   return(df)
 }
 
 save_bw_df <- function(df){
-  save_path = "C:/Users/janni/Desktop/gym/data"
+  save_path = "./data"
   file_name ="bw_data.csv"
   write.csv(df, paste(save_path, file_name,sep="/"), row.names=FALSE)
   return('Added bodyweight to dataframe!')

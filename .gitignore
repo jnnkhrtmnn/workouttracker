@@ -8,7 +8,7 @@
 # User-specific files
 .Ruserdata
 *.csv
-
+*.yaml
 
 # Example code in package build process
 *-Ex.R
