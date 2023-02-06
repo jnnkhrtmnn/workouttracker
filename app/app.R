@@ -7,8 +7,7 @@ library(ggplot2)
 library(plotly)
 library(readr)
 
-
-source("mod/utils.R")
+source("./mod/utils.R")
 
 
 df = load_df()
@@ -267,8 +266,8 @@ server <- function(input, output, session) {
   sub_plot_dat = reactive({plot_dat %>%
       filter(exercise %in%
       exercises[req(getReactableState("choice_tabl", name="selected"))]) %>%
-      filter(between(reps,req(rep_range()[1]),req(rep_range()[2]))) #%>%
-      #filter(between(date,req(d_range()[1]),req(d_range()[2])))
+      filter(between(reps,req(rep_range()[1]),req(rep_range()[2]))) %>%
+      filter(between(date,req(as.Date(d_range()[1], origin = "1970-01-01")),req(as.Date(d_range()[2], origin = "1970-01-01"))))
     })
   
   output$wplot <- renderPlot({
@@ -301,7 +300,7 @@ server <- function(input, output, session) {
   
 }
 
-options(shiny.port = 9999)
-shinyApp(ui, server)
+options(shiny.port = 3838)
+shinyApp(ui = ui, server = server)
 
 

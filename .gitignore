@@ -9,6 +9,7 @@
 .Ruserdata
 *.csv
 *.yaml
+*.pem
 
 # Example code in package build process
 *-Ex.R
