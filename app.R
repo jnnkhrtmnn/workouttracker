@@ -1,6 +1,3 @@
-
-
-
 library(shiny)
 library(imputeTS)
 library(reactable)
@@ -8,6 +5,7 @@ library(dplyr)
 library(DT)
 library(shinythemes)
 library(ggplot2)
+library(plotly)
 
 setwd("C:/Users/janni/Desktop/gym")
 
@@ -128,7 +126,7 @@ server <- function(input, output, session) {
   up_dat <- function(){
     
     df <<- load_df()
-    plot_dat <<- group_by(df, exercise, date) %>% summarize(weight = mean(weight), reps=mean(reps), sets=mean(sets))
+    plot_dat <<- group_by(df, exercise, date) %>% summarize(weight = mean(weight), reps=mean(reps), sets=max(set))
   
     exercises <<- c(plot_dat %>% count(exercise) %>% arrange(desc(n)) %>% select(exercise))[[1]]
     
@@ -136,7 +134,6 @@ server <- function(input, output, session) {
   
   up_dat()
   
-  #updateSelectizeInput(session, NULL, choices = c("",sort(unique(df$exercise))), server = TRUE)
   counter = 0
   observeEvent(input$add_row, {
     
@@ -186,14 +183,18 @@ server <- function(input, output, session) {
     if(length(inserted)>0){
       for (i in (1:length(inserted))){
         ex = input[[paste0(inserted[i],'_ex')]]
-        w = as.integer(input[[paste0(inserted[i],'_w')]])
         r = c(as.numeric(strsplit(input[[paste0(inserted[i],'_r')]],split=",",fixed=TRUE)[[1]]))
-        s = length(r)
+        s = c(1:length(r))
+        w = c(as.numeric(strsplit(input[[paste0(inserted[i],'_w')]],split=",",fixed=TRUE)[[1]]))
+        if(length(w)==1){
+          w = rep(w,length(s))
+        }
+
         
         list_in$exercises[[ex]] = list(
           'weight' = w,
           'reps' = r,
-          'sets' = s
+          'set' = s
         )
       }
       df <<- load_df()
@@ -213,7 +214,7 @@ server <- function(input, output, session) {
         save_bw_df(bw_data)
       }
       
-      #up_dat()
+      session$reload()
       showNotification('Added workout to dataframe!', type="message",duration=2)
     }
   })
@@ -279,6 +280,9 @@ server <- function(input, output, session) {
         legend.text = element_text(size = 20)
       )
   })  
+  
+  
+
 
   output$rplot <- renderPlot({
       ggplot(sub_plot_dat(), aes(date,reps)) + geom_point(aes(col=exercise), size=4) + geom_line(aes(col=exercise)) + 
@@ -301,12 +305,5 @@ server <- function(input, output, session) {
 
 options(shiny.port = 9999)
 shinyApp(ui, server)
-
-
-
-# histograms of rep ranges
-# hover over for plots
-# LR for weight / reps progress 
-
 
 

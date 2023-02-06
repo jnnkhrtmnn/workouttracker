@@ -1,43 +1,20 @@
 
 
-
-
-
-
-list_in = list('date' = '2021-04-22'
-               ,'bodyweight' = NA
-               ,'exercises' = list(
-                  'squat' = list(
-                    'weight' = 79
-                    ,'sets' = 3
-                    ,'reps'= c(5,5,5)
-                  ),
-                  'bench_press' = list(
-                    'weight' = 79
-                    ,'sets' = 3
-                    ,'reps'= c(5,5,5)
-                  )
-               )
-)
-
-
 library(tidyverse)
-
-#df = tibble(date=c(),exercise=c(), weight=c(), sets=c(), reps=c())
 
 
 add_workout_to_df <- function(df, list_in){
     
-  df_w = tibble(date=c(),exercise=c(), weight=c(), sets=c(), reps=c())
+  df_w = tibble(date=c(),exercise=c(), weight=c(), set=c(), reps=c())
   for (i in (1:length(list_in$exercises))){
     
     ex = list_in$exercises[[i]]
   
       df_ex = tibble(
-          date=rep(list_in$date, ex$sets),
-          exercise=rep(names(list_in$exercises)[i],ex$sets),
-          weight=rep(ex$weight,ex$sets),
-          sets=rep(ex$sets, ex$sets),
+          date=rep(list_in$date, length(ex$set)),
+          exercise=rep(names(list_in$exercises)[i],length(ex$set)),
+          weight=ex$weight,
+          set=ex$set,
           reps=ex$reps
           )
     
@@ -78,17 +55,3 @@ save_bw_df <- function(df){
   write.csv(df, paste(save_path, file_name,sep="/"), row.names=FALSE)
   return('Added bodyweight to dataframe!')
 }
-
-
-
-#df = load_df()
-#plot_dat = group_by(df, exercise, date) %>% summarize(weight = mean(weight), reps=mean(reps), sets=mean(sets))
-#exercises = c(plot_dat %>% count(exercise) %>% arrange(desc(n)) %>% select(exercise))[[1]]
-
-#da = plot_dat %>% filter(exercise %in%c("bench_press"))
-
-
-#lm = lm(weight ~ date, da)
-
-#plot(lm)
-#summary(lm)
