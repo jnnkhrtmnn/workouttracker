@@ -123,7 +123,7 @@ server <- function(input, output, session) {
   
   up_dat <- function(){
     
-    df <<- load_df()
+    df <<- load_df(local=FALSE)
     plot_dat <<- group_by(df, exercise, date) %>% summarize(weight = mean(weight), reps=mean(reps), sets=max(set))
   
     exercises <<- c(plot_dat %>% count(exercise) %>% arrange(desc(n)) %>% select(exercise))[[1]]
@@ -267,8 +267,8 @@ server <- function(input, output, session) {
   sub_plot_dat = reactive({plot_dat %>%
       filter(exercise %in%
       exercises[req(getReactableState("choice_tabl", name="selected"))]) %>%
-      filter(between(reps,req(rep_range()[1]),req(rep_range()[2]))) %>%
-      filter(between(date,req(d_range()[1]),req(d_range()[2])))
+      filter(between(reps,req(rep_range()[1]),req(rep_range()[2]))) #%>%
+      #filter(between(date,req(d_range()[1]),req(d_range()[2])))
     })
   
   output$wplot <- renderPlot({

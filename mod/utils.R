@@ -30,21 +30,31 @@ save_df <- function(df){
   save_path = "./data"
   file_name ="app_data.csv"
   write.csv(df, paste(save_path, file_name,sep="/"), row.names=FALSE)
+  rdrop2::drop_upload(paste(save_path, file_name,sep="/"), path="workout")
   return('Added workout to dataframe!')
 }
 
 
-load_df <- function(){
-  load_path = "./data"
-  file_name ="app_data.csv"
-  df = read_csv(paste(load_path, file_name, sep="/"))
+load_df <- function(local=FALSE){
+  if(local){
+    load_path = "./data"
+    file_name ="app_data.csv"
+    df = read_csv(paste(load_path, file_name, sep="/"))
+  } else {
+    df = rdrop2::drop_read_csv("workout/app_data.csv")
+    df = mutate(df, date = as.Date(date))
+  }
   return(df)
 }
 
-load_bw_data <- function(){
-  load_path = "./data"
-  file_name ="bw_data.csv"
-  df = read_csv(paste(load_path, file_name, sep="/"))
+load_bw_data <- function(local=FALSE){
+  if(local){
+    load_path = "./data"
+    file_name ="bw_data.csv"
+    df = read_csv(paste(load_path, file_name, sep="/"))
+  } else {
+    df = rdrop2::drop_read_csv("workout/bw_data.csv")
+  }
   return(df)
 }
 
@@ -52,5 +62,6 @@ save_bw_df <- function(df){
   save_path = "./data"
   file_name ="bw_data.csv"
   write.csv(df, paste(save_path, file_name,sep="/"), row.names=FALSE)
+  rdrop2::drop_upload(paste(save_path, file_name,sep="/"), path="workout")
   return('Added bodyweight to dataframe!')
 }
