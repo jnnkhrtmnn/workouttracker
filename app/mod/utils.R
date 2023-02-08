@@ -1,5 +1,3 @@
-
-
 library(dplyr)
 library(rdrop2)
 
@@ -28,11 +26,13 @@ add_workout_to_df <- function(df, list_in){
 }
 
 
-save_df <- function(df){
+save_df <- function(df, local=FALSE){
   save_path = "./data"
   file_name ="app_data.csv"
   write.csv(df, paste(save_path, file_name,sep="/"), row.names=FALSE)
-  rdrop2::drop_upload(paste(save_path, file_name,sep="/"), path="workout")
+  if(!local){
+    rdrop2::drop_upload(paste(save_path, file_name,sep="/"), path="workout")
+  }
   return('Added workout to dataframe!')
 }
 
@@ -60,10 +60,12 @@ load_bw_data <- function(local=FALSE){
   return(df)
 }
 
-save_bw_df <- function(df){
+save_bw_df <- function(df, local=FALSE){
   save_path = "./data"
   file_name ="bw_data.csv"
   write.csv(df, paste(save_path, file_name,sep="/"), row.names=FALSE)
-  rdrop2::drop_upload(paste(save_path, file_name,sep="/"), path="workout")
+  if(!local){
+    rdrop2::drop_upload(paste(save_path, file_name,sep="/"), path="workout")
+  }
   return('Added bodyweight to dataframe!')
 }
