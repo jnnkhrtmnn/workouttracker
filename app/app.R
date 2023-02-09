@@ -116,7 +116,8 @@ ui <- navbarPage("Workout tracker", inverse = TRUE, collapsible = FALSE, positio
 
 # Define server logic required to draw a histogram ----
 server <- function(input, output, session) {
-  
+
+
   inserted <- c()
   
   up_dat <- function(){
