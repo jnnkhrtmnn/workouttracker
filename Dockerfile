@@ -24,7 +24,7 @@ RUN apt-get update && \
 COPY /app/renv.lock ./renv.lock
 ## app folder
 COPY /app ./app
-COPY .httr-oauth ./app/.httr-oauth 
+COPY droptoken.rds ./app/droptoken.rds 
 RUN mkdir -p /app/data
 
 # install renv & restore packages
