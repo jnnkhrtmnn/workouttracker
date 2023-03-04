@@ -2,6 +2,8 @@ library(dplyr)
 library(rdrop2)
 
 token = readRDS("droptoken.rds")
+token$refresh()
+
 
 add_workout_to_df <- function(df, list_in){
     
